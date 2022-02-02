@@ -1,0 +1,41 @@
+---
+# tasks file for setupGVM
+
+- name: Ensure artifact dir exists
+  file:
+    path: "{{ playbook_dir }}/artifacts"
+    state: directory
+
+- name: Check and see if GVM is already installed
+  stat:
+    path: "{{ ansible_env['HOME'] }}/.gvm/bin/gvm"
+  register: setup_gvm_stat
+
+- block:
+    - name: Get GVM installation script
+      get_url:
+        url: https://raw.githubusercontent.com/moovweb/gvm/master/binscripts/gvm-installer
+        dest: "{{ playbook_dir }}/artifacts/gvm_installer"
+        mode: "0777"
+
+    - name: Run GVM installation script
+      command: "{{ playbook_dir }}/artifacts/gvm_installer"
+  
+  when: not setup_gvm_stat.stat.exists
+
+- name: Get the latest Go version to install
+  shell:
+    cmd: |
+       bash -lc
+       source {{ ansible_env.HOME }}.bash_profile
+       {{ ansible_env.HOME }}/.gvm/bin/gvm listall | grep go | grep -v beta | tail -n 1
+  register: setup_gvm_version
+
+- debug:
+    var: setup_gvm_version
+
+- debug:
+    msg: "Go version: {{ setup_gvm_version.stdout_lines }}"
+
+    #- name: Install Go verison
+

@@ -1,0 +1,5 @@
+all:
+  children:
+    controller:
+      hosts:
+        localhost:
