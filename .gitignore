@@ -1,3 +1,4 @@
+# Do not commit artifacts
 artifacts/
 
 # Byte-compiled / optimized / DLL files
