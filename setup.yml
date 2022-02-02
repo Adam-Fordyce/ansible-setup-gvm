@@ -1,0 +1,6 @@
+- hosts: controller
+  become: yes
+  become_user: "{{ gvm_user }}"
+  gather_facts: yes
+  roles:
+    - role: setupGVM
